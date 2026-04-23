@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pedro Barbosa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime: #CAFF00;
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray: #f2f2f2;
+      --text-muted: #888;
+    }
+
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; }
+
+    /* ── NAVBAR ── */
+    :root {
+      --hero-pad: 6vw;
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 36px var(--hero-pad);
+    }
+    .nav-logo { color: var(--white); font-size: 15px; font-weight: 400; font-family: 'Inter', sans-serif; letter-spacing: 0; line-height: 1; display: flex; align-items: center; gap: 8px; text-decoration: none; }
+    .nav-logo::before { content: ''; width: 15px; height: 15px; border-radius: 50%; background: var(--white); display: inline-block; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 32px; list-style: none; margin-left: calc(10% + 88px); }
+    .nav-links a { color: var(--white); text-decoration: none; font-size: 14px; font-weight: 400; font-family: 'Inter', sans-serif; letter-spacing: 0; line-height: 1;
+      position: relative; display: inline-block; overflow: hidden; padding-bottom: 3px;
+    }
+    .nav-links a span {
+      display: block;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
+    }
+    .nav-links a::before {
+      content: attr(data-text);
+      position: absolute; top: 100%; left: 0;
+      font-size: 14px; font-weight: 400; color: var(--white);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1);
+      white-space: nowrap;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1.5px; background: rgba(255,255,255,0.5);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1) 0.05s;
+    }
+    .nav-links a:hover { opacity: 1; }
+    .nav-links a:hover span { transform: translateY(-110%); opacity: 0; }
+    .nav-links a:hover::before { transform: translateY(-100%); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta a {
+      background: rgba(255,255,255,0.15); color: var(--white); padding: 10px 20px;
+      border-radius: 999px; font-size: 14px; font-weight: 400; font-family: 'Inter', sans-serif; letter-spacing: 0; text-decoration: none;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta a:hover { background: var(--white); color: #333; }
+
+    nav.scrolled .nav-logo,
+    nav.scrolled .nav-links a,
+    nav.scrolled .nav-links a::before { color: #333; }
+    nav.scrolled .nav-logo::before { background: #333; }
+    nav.scrolled .nav-links a::after { background: rgba(0,0,0,0.4); }
+    nav.scrolled .nav-cta a {
+      background: rgba(0,0,0,0.08); color: #333;
+      backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    }
+    nav.scrolled .nav-cta a:hover { background: #333; color: var(--white); }
+    nav { transition: background 0.3s; }
+    nav .nav-logo, nav .nav-links a, nav .nav-cta a { transition: color 0.3s, background 0.2s, opacity 0.3s; }
+    nav .nav-logo::before { transition: background 0.3s; }
+    #hero {
+      position: relative; height: 100vh; width: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.55)),
+                  url('uploads/Home_BG.png') center 10%/cover no-repeat;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      overflow: hidden;
+    }
+    .hero-bio {
+      position: absolute; right: calc(15vw + var(--hero-pad) - 2vw - 8px); top: calc(55% - 18px);
+      transform: translateY(-10%) translateX(20px);
+      color: var(--white); font-size: 19px; line-height: 1.4; max-width: 540px;
+    }
+    .hero-name {
+      font-weight: 700;
+      color: var(--white); line-height: 0.88;
+      white-space: nowrap;
+      width: 100%;
+      display: block;
+      padding: 0 var(--hero-pad) 4px calc(var(--hero-pad) + 8px);
+      letter-spacing: -0.045em;
+      box-sizing: border-box;
+      font-size: 10px;
+      margin-bottom: 16px;
+    }
+    .hero-footer {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 28px var(--hero-pad) 40px; color: var(--white); font-size: 17px; font-weight: 400;
+    }
+    .hero-explore { cursor: pointer; padding-left: 23px; display: inline-flex; align-items: center; gap: 6px; }
+    .hero-explore .arrow {
+      display: inline-block;
+      transition: transform 0.15s cubic-bezier(0.4,0,0.2,1);
+    }
+    .hero-explore:hover .arrow {
+      animation: arrowBounce 0.8s ease-in-out forwards;
+    }
+    @keyframes arrowBounce {
+      0%   { transform: translateY(0); }
+      35%  { transform: translateY(8px); }
+      65%  { transform: translateY(3px); }
+      80%  { transform: translateY(7px); }
+      100% { transform: translateY(0); }
+    }
+    .hero-location { letter-spacing: 0.01em; display: inline-flex; align-items: center; }
+    .clock-digit { display: inline-block; overflow: hidden; position: relative; height: 1.2em; vertical-align: bottom; min-width: 0.6em; text-align: center; }
+    .clock-digit .cur, .clock-digit .next { display: block; }
+    .clock-digit .next { position: absolute; top: 100%; left: 0; width: 100%; }
+    .clock-digit.rolling .cur { animation: digitUp 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+    .clock-digit.rolling .next { animation: digitIn 0.35s cubic-bezier(0.4,0,0.2,1) forwards; }
+    @keyframes digitUp { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+    @keyframes digitIn { from { transform: translateY(0); } to { transform: translateY(-100%); } }
+    .hero-year { letter-spacing: 0.01em; margin-right: 4px; }
+
+    /* Lime bar scrolling marquee */
+    .marquee-bar {
+      background: var(--lime); overflow: hidden; white-space: nowrap; padding: 10px 0;
+    }
+    .marquee-track {
+      display: inline-block; animation: marquee 18s linear infinite;
+      font-size: 13px; font-weight: 700; letter-spacing: 0.1em; color: var(--black);
+    }
+    @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+
+    /* ── INTRO ── */
+    #intro { padding: 100px 32px 80px; text-align: center; }
+    #intro h2 { font-size: clamp(36px, 5vw, 64px); font-weight: 800; margin-bottom: 20px; }
+    #intro p { font-size: 16px; color: #555; line-height: 1.7; max-width: 520px; margin: 0 auto 64px; }
+    .intro-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; border-top: 1px solid #e0e0e0; }
+    .intro-card { padding: 32px; border-right: 1px solid #e0e0e0; text-align: left; }
+    .intro-card:last-child { border-right: none; }
+    .intro-card h3 { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+    .intro-card p { font-size: 14px; color: #666; line-height: 1.6; }
+
+    /* ── PROJETOS ── */
+    #projetos { padding: 80px 32px; }
+    .section-label { font-size: 13px; color: var(--text-muted); letter-spacing: 0.08em; margin-bottom: 40px; border-top: 1px solid #e0e0e0; padding-top: 16px; }
+    .projects-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2px; background: #e0e0e0; }
+    .project-item { background: var(--white); overflow: hidden; cursor: pointer; }
+    .project-thumb {
+      width: 100%; aspect-ratio: 16/10; object-fit: cover;
+      display: block; transition: transform 0.4s ease;
+      background: #ddd;
+    }
+    .project-item:hover .project-thumb { transform: scale(1.03); }
+    .project-info { padding: 16px 0 24px; display: flex; justify-content: space-between; align-items: flex-start; }
+    .project-name { font-size: 15px; font-weight: 600; }
+    .project-tags { font-size: 12px; color: var(--text-muted); display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; max-width: 60%; text-align: right; }
+    .project-tags span::after { content: ' /'; }
+    .project-tags span:last-child::after { content: ''; }
+
+    /* placeholders para imagens */
+    .ph { width: 100%; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center; font-size: 13px; color: #aaa; transition: transform 0.4s ease; }
+    .ph-1 { background: #1a1a1a; }
+    .ph-2 { background: #3a5a4a; }
+    .ph-3 { background: #e8e0d8; }
+    .ph-4 { background: #c8d8e8; }
+    .project-item:hover .ph { transform: scale(1.03); }
+
+    /* ── BLOG ── */
+    #blog { padding: 80px 32px; }
+    .blog-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .blog-card { cursor: pointer; }
+    .blog-thumb { width: 100%; aspect-ratio: 4/3; background: #eeeaf8; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .blog-thumb svg { opacity: 0.4; }
+    .blog-meta { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 8px; }
+    .blog-title { font-size: 16px; font-weight: 600; line-height: 1.4; }
+    .blog-card:hover .blog-title { text-decoration: underline; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--gray); padding: 80px 32px 48px; }
+    .footer-inner { display: grid; grid-template-columns: 1fr 160px 1fr; gap: 32px; margin-bottom: 64px; }
+    .footer-contact-label { font-size: 13px; color: var(--text-muted); }
+    .footer-contact-info { display: flex; flex-direction: column; gap: 4px; }
+    .footer-contact-info a { font-size: 14px; font-weight: 600; color: var(--black); text-decoration: none; letter-spacing: 0.03em; }
+    .footer-contact-info a:hover { color: #555; }
+    .footer-socials { display: flex; justify-content: center; gap: 16px; font-size: 14px; color: var(--text-muted); margin: 0 auto; align-items: flex-start; padding-top: 4px; }
+    .footer-socials a { color: var(--black); text-decoration: none; font-weight: 500; }
+    .footer-socials a:hover { color: #555; }
+    .footer-socials span { color: #ccc; }
+    .footer-bottom { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-muted); border-top: 1px solid #e0e0e0; padding-top: 24px; margin-top: 40px; }
+
+    /* ── LOADER ── */
+    #mobile-loader {
+      display: flex;
+      position: fixed; inset: 0; z-index: 9999;
+      background: #fff;
+      align-items: center; justify-content: center;
+      pointer-events: all;
+      transition: transform 0.5s cubic-bezier(0.7,0,0.3,1);
+    }
+    #mobile-loader.hide {
+      transform: translateY(100%);
+      pointer-events: none;
+    }
+    .loader-name { display: flex; gap: 4px; align-items: baseline; }
+    .loader-pedro, .loader-barbosa {
+      color: #333;
+      font-family: 'Inter', sans-serif;
+      font-size: 22px; font-weight: 500;
+      letter-spacing: -0.02em; opacity: 0;
+    }
+    .loader-pedro  { animation: loaderFadeIn 0.5s ease forwards 0.3s; }
+    .loader-barbosa{ animation: loaderFadeIn 0.5s ease forwards 0.7s; }
+    @keyframes loaderFadeIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 768px) {
+      #mobile-loader { background: #fff; }
+      .loader-pedro, .loader-barbosa { color: #333; }
+    }
+
+    /* ── HAMBURGER ── */
+    .nav-hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .nav-hamburger span { display: block; width: 22px; height: 2px; background: var(--black); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      :root { --hero-pad: 20px; }
+      nav { background: var(--white) !important; padding: 18px var(--hero-pad); }
+      .nav-logo { color: var(--black) !important; font-size: 17px; font-weight: 500; letter-spacing: -0.02em; }
+      .nav-logo::before { background: var(--black) !important; }
+      .nav-links { display: none !important; }
+      .nav-cta { display: none !important; }
+      .nav-hamburger { display: flex !important; }
+      #hero { background-image: linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.55)), url('uploads/Pedro-Barbosa-Small.png'); background-position: calc(25% - 200px) calc(15% + 20px); background-size: 230%; height: 110vh; }
+      .hero-bio {
+        display: block !important; position: absolute !important;
+        left: var(--hero-pad) !important; right: auto !important;
+        top: auto !important; bottom: calc(185px + 10vh) !important;
+        transform: none !important; font-size: 17px; font-weight: 500; line-height: 1.3; max-width: 90vw;
+      }
+      .hero-name { padding: 0 var(--hero-pad) 4px calc(var(--hero-pad) - 2px) !important; transform: scale(1.01); transform-origin: left; position: absolute; bottom: calc(78px + 10vh); left: 0; }
+      .hero-footer { position: absolute; bottom: calc(10vh); left: 0; right: 0; padding: 0 var(--hero-pad) 28px !important; }
+      .hero-explore { display: inline-flex !important; padding-left: 0 !important; }
+      .hero-year { display: none; }
+      .hero-footer { justify-content: space-between; font-weight: 500; padding: 18px var(--hero-pad) 50px !important; }
+      .intro-cards { grid-template-columns: 1fr; }
+      .intro-card { border-right: none; border-bottom: 1px solid #e0e0e0; }
+      .intro-card:last-child { border-bottom: none; }
+      .blog-grid { grid-template-columns: 1fr; }
+      .projects-grid { grid-template-columns: 1fr; }
+      .footer-inner { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MOBILE LOADER -->
+  <div id="mobile-loader">
+    <div class="loader-name">
+      <span class="loader-pedro">Pedro</span>
+      <span class="loader-barbosa">Barbosa</span>
+    </div>
+  </div>
+  <nav>
+    <a class="nav-logo" href="#">Pedro Barbosa</a>
+    <ul class="nav-links">
+      <li><a href="#" data-text="Início"><span>Início</span></a></li>
+      <li><a href="#projetos" data-text="Projetos"><span>Projetos</span></a></li>
+      <li><a href="#blog" data-text="Insights"><span>Insights</span></a></li>
+      <li><a href="#" data-text="Sobre"><span>Sobre</span></a></li>
+    </ul>
+    <div class="nav-cta"><a href="#footer">Contato</a></div>
+    <div class="nav-hamburger" onclick="this.classList.toggle('open')">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-bio">
+      Gerente de Projetos de IA, Ex-IBM com MBA na FGV. Founding Team de Startup de IA adquirida por +USD5M. Compartilhando minha jornada empreendedora 🇧🇷
+    </div>
+    <div class="hero-name">Pedro Barbosa</div>
+    <div class="hero-footer">
+      <span class="hero-explore">Explore <span class="arrow">↓</span></span>
+      <span class="hero-location" id="clock"><span class="clock-prefix">BR&nbsp;</span><span class="clock-digit" id="d0">-</span><span class="clock-digit" id="d1">-</span><span class="clock-sep">:</span><span class="clock-digit" id="d2">-</span><span class="clock-digit" id="d3">-</span></span>
+      <span class="hero-year" id="year-display"><span class="clock-digit" id="y0">2</span><span class="clock-digit" id="y1">0</span><span class="clock-digit" id="y2">2</span><span class="clock-digit" id="y3">6</span></span>
+    </div>
+  </section>
+
+
+
+  <!-- INTRO -->
+  <section id="intro">
+    <h2>Sinta-se em Casa</h2>
+    <p>Por aqui compartilho o que aprendo enquanto empreendo.<br>Os principais temas são IA, Projetos, Vendas e Marcas.</p>
+    <div class="intro-cards">
+      <div class="intro-card">
+        <h3>Insights Aplicáveis</h3>
+        <p>Conteúdo prático sobre IA, gestão de projetos e empreendedorismo com base em experiências reais.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Portfólio de Projetos</h3>
+        <p>Cases de web design, branding e desenvolvimento — do conceito à entrega final.</p>
+      </div>
+      <div class="intro-card">
+        <h3>Sobre mim</h3>
+        <p>Ex-IBM, MBA na FGV, Founding Team de startup de IA adquirida por +USD5M.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJETOS -->
+  <section id="projetos">
+    <p class="section-label">Projetos</p>
+    <div class="projects-grid">
+
+      <div class="project-item">
+        <div class="ph ph-1" style="color:#555;font-size:24px;font-weight:800;">Kiteworks</div>
+        <div class="project-info">
+          <span class="project-name">Kiteworks</span>
+          <div class="project-tags">
+            <span>Branding</span><span>Web Design</span><span>Framer Dev</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-item">
+        <div class="ph ph-2" style="color:#aaccbb;font-size:24px;font-weight:800;">Echo Collective</div>
+        <div class="project-info">
+          <span class="project-name">Echo Collective</span>
+          <div class="project-tags">
+            <span>Web Design</span><span>Audio Embed</span><span>E-commerce</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-item">
+        <div class="ph ph-3" style="color:#998877;font-size:24px;font-weight:800;">Typoria</div>
+        <div class="project-info">
+          <span class="project-name">Typoria</span>
+          <div class="project-tags">
+            <span>Creative Direction</span><span>Framer Build</span><span>Interaction Design</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="project-item">
+        <div class="ph ph-4" style="color:#7799bb;font-size:24px;font-weight:800;">Scope AI</div>
+        <div class="project-info">
+          <span class="project-name">Scope AI</span>
+          <div class="project-tags">
+            <span>UI/UX Design</span><span>Framer Dev</span><span>Animation</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section id="blog">
+    <p class="section-label">Blog</p>
+    <div class="blog-grid">
+
+      <div class="blog-card">
+        <div class="blog-thumb">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="4" fill="#7c5cfc" opacity="0.2"/>
+            <path d="M10 30 L20 10 L30 30" stroke="#7c5cfc" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-meta"><span>24 de jul. de 2025</span><span>3 mins to read</span></div>
+        <div class="blog-title">Building for Attention Spans Under 3 Seconds</div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="4" fill="#7c5cfc" opacity="0.2"/>
+            <path d="M10 30 L20 10 L30 30" stroke="#7c5cfc" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-meta"><span>24 de jul. de 2025</span><span>4 mins to read</span></div>
+        <div class="blog-title">Why Web Designers Should Think Like Product People</div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-thumb">
+          <svg width="40" height="40" viewBox="0 0 40 40" fill="none">
+            <rect width="40" height="40" rx="4" fill="#7c5cfc" opacity="0.2"/>
+            <path d="M10 30 L20 10 L30 30" stroke="#7c5cfc" stroke-width="2" fill="none"/>
+          </svg>
+        </div>
+        <div class="blog-meta"><span>24 de jul. de 2025</span><span>3 mins to read</span></div>
+        <div class="blog-title">5 Microinteractions That Actually Matter</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <div></div>
+      <div class="footer-contact-label">Contato</div>
+      <div class="footer-contact-info">
+        <a href="/cdn-cgi/l/email-protection#c2b2a7aaa0a3b0a0adb1a382aaadb6afa3abaeeca1adaf"><span class="__cf_email__" data-cfemail="a1f1e4e9e3e0f3e3eef2e0e1e9eef5ece0e8ed8fe2eeec">[email&#160;protected]</span></a>
+        <a href="tel:+5519981746339">+55 19 9 8174 6339</a>
+        <span style="font-size:14px;font-weight:600;">SÃO PAULO, SP – BRASIL</span>
+      </div>
+    </div>
+    <div class="footer-socials">
+      <a href="#">Instagram</a>
+      <span>/</span>
+      <a href="#">X (Twitter)</a>
+      <span>/</span>
+      <a href="#">LinkedIn</a>
+    </div>
+    <div class="footer-bottom">
+      <span>Pedro Barbosa</span>
+      <span>Gerente de Projetos</span>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Fit hero name to full width
+    function fitHeroName() {
+      const el = document.querySelector('.hero-name');
+      const padL = parseFloat(getComputedStyle(el).paddingLeft);
+      const padR = parseFloat(getComputedStyle(el).paddingRight);
+      const available = window.innerWidth - padL - padR;
+      const probe = document.createElement('span');
+      probe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;white-space:nowrap;font-family:Inter,sans-serif;font-weight:700;letter-spacing:-0.045em;visibility:hidden;';
+      probe.textContent = el.textContent;
+      document.body.appendChild(probe);
+
+      let lo = 10, hi = 800;
+      while (lo < hi - 1) {
+        const mid = Math.floor((lo + hi) / 2);
+        probe.style.fontSize = mid + 'px';
+        if (probe.getBoundingClientRect().width <= available) lo = mid;
+        else hi = mid;
+      }
+      document.body.removeChild(probe);
+      el.style.fontSize = lo + 'px';
+    }
+    fitHeroName();
+    window.addEventListener('resize', fitHeroName);
+
+    // Relógio em tempo real com animação
+    const digitIds = ['d0','d1','d2','d3'];
+    const yearIds = ['y0','y1','y2','y3'];
+    let prevDigits = ['', '', '', ''];
+    let prevYear = ['', '', '', ''];
+
+    function initClock() {
+      digitIds.forEach(id => {
+        const el = document.getElementById(id);
+        el.innerHTML = '<span class="cur">-</span>';
+      });
+    }
+
+    function animateDigit(el, newChar) {
+      const cur = el.querySelector('.cur');
+      cur.textContent = newChar;
+    }
+
+    function rollDigit(el, newChar) {
+      el.classList.remove('rolling');
+      void el.offsetWidth; // reflow
+      const cur = el.querySelector('.cur');
+      // Create next span
+      let next = el.querySelector('.next');
+      if (!next) { next = document.createElement('span'); next.className = 'next'; el.appendChild(next); }
+      next.textContent = newChar;
+      el.classList.add('rolling');
+      setTimeout(() => {
+        cur.textContent = newChar;
+        if (next.parentNode) next.parentNode.removeChild(next);
+        el.classList.remove('rolling');
+      }, 360);
+    }
+
+    function updateClock() {
+      const now = new Date();
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const y = String(now.getFullYear());
+      const digits = [h[0], h[1], m[0], m[1]];
+      digits.forEach((ch, i) => {
+        const el = document.getElementById(digitIds[i]);
+        if (!el.querySelector('.cur')) { el.innerHTML = `<span class="cur">${ch}</span>`; prevDigits[i] = ch; return; }
+        if (ch !== prevDigits[i]) { rollDigit(el, ch); prevDigits[i] = ch; }
+      });
+      yearIds.forEach((id, i) => {
+        const el = document.getElementById(id);
+        const ch = y[i] || '0';
+        if (!el.querySelector('.cur')) { el.innerHTML = `<span class="cur">${ch}</span>`; prevYear[i] = ch; return; }
+        if (ch !== prevYear[i]) { rollDigit(el, ch); prevYear[i] = ch; }
+      });
+    }
+    updateClock();
+    setInterval(updateClock, 1000);
+
+    // Loader (desktop + mobile)
+    const loader = document.getElementById('mobile-loader');
+    if (loader) {
+      document.body.style.overflow = 'hidden';
+      setTimeout(() => {
+        loader.classList.add('hide');
+        document.body.style.overflow = '';
+        setTimeout(() => { loader.style.display = 'none'; }, 520);
+      }, 2500);
+    }
+
+    // Auto-animate arrow no mobile após 5s
+    if (window.innerWidth <= 768) {
+      setTimeout(() => {
+        const arrow = document.querySelector('.hero-explore .arrow');
+        if (arrow) {
+          arrow.style.animation = 'none';
+          void arrow.offsetWidth;
+          arrow.style.animation = 'arrowBounce 0.8s ease-in-out forwards';
+          setTimeout(() => { arrow.style.animation = ''; }, 900);
+        }
+      }, 5000);
+    }
+
+    // Nav color on scroll
+    const nav = document.querySelector('nav');
+    const hero = document.getElementById('hero');
+    const heroObserver = new IntersectionObserver(([entry]) => {
+      nav.classList.toggle('scrolled', !entry.isIntersecting);
+    }, { threshold: 0.05 });
+    heroObserver.observe(hero);
+
+    // Scroll suave para links do nav
+    document.querySelectorAll('a[href^="#"]').forEach(link => {
+      link.addEventListener('click', e => {
+        const href = link.getAttribute('href');
+        if (href === '#') return;
+        const target = document.querySelector(href);
+        if (target) {
+          e.preventDefault();
+          const top = target.getBoundingClientRect().top + window.scrollY;
+          window.scrollTo({ top, behavior: 'smooth' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
