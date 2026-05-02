@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Power of Restraint in Design — Pedro Barbosa</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --lime: #CAFF00;
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --gray: #f2f2f2;
+      --text-muted: #888;
+      --hero-pad: 6vw;
+      --content-width: 1150px;
+    }
+
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', sans-serif; background: var(--white); color: var(--black); overflow-x: hidden; }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 202;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 36px var(--hero-pad);
+      transition: background 0.3s, padding 0.3s, border-color 0.3s;
+      border-bottom: 1px solid transparent;
+    }
+    nav.scrolled {
+      background: rgba(255,255,255,0.92);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 20px var(--hero-pad);
+      border-bottom-color: rgba(0,0,0,0.06);
+    }
+    .nav-logo {
+      color: var(--black); font-size: 15px; font-weight: 400;
+      font-family: 'Inter', sans-serif; line-height: 1;
+      display: flex; align-items: center; gap: 8px; text-decoration: none;
+    }
+    .nav-logo::before {
+      content: ''; width: 15px; height: 15px; border-radius: 50%;
+      background: var(--black); display: inline-block; flex-shrink: 0;
+    }
+    .nav-links { display: flex; gap: 32px; list-style: none; margin-left: calc(10% + 88px); }
+    .nav-links a {
+      color: var(--black); text-decoration: none; font-size: 14px; font-weight: 400;
+      font-family: 'Inter', sans-serif; line-height: 1;
+      position: relative; display: inline-block; overflow: hidden; padding-bottom: 3px;
+    }
+    .nav-links a span { display: block; transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s; }
+    .nav-links a::before {
+      content: attr(data-text); position: absolute; top: 100%; left: 0;
+      font-size: 14px; font-weight: 400; color: var(--black);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1); white-space: nowrap;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -3px; left: 0; right: 0;
+      height: 1.5px; background: rgba(0,0,0,0.4);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1) 0.05s;
+    }
+    .nav-links a:hover span { transform: translateY(-110%); opacity: 0; }
+    .nav-links a:hover::before { transform: translateY(-100%); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-cta a {
+      background: rgba(0,0,0,0.06); color: var(--black); padding: 10px 20px;
+      border-radius: 999px; font-size: 14px; font-weight: 400;
+      font-family: 'Inter', sans-serif; text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .nav-cta a:hover { background: var(--black); color: var(--white); }
+
+    /* ── HAMBURGER ── */
+    .nav-hamburger {
+      display: none; flex-direction: column; gap: 5px;
+      cursor: pointer; padding: 4px; z-index: 201; position: relative;
+    }
+    .nav-hamburger span {
+      display: block; width: 22px; height: 2px; background: var(--black);
+      transition: transform 0.35s cubic-bezier(0.4,0,0.2,1), opacity 0.35s;
+    }
+    .nav-hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* ── MOBILE MENU ── */
+    .mobile-menu-overlay {
+      display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      z-index: 199; background: #fff; flex-direction: column;
+      justify-content: flex-start; padding: 100px 28px 48px;
+      opacity: 0; transform: translateY(-12px);
+      transition: opacity 0.38s cubic-bezier(0.4,0,0.2,1), transform 0.38s cubic-bezier(0.4,0,0.2,1);
+      pointer-events: none;
+    }
+    .mobile-menu-overlay.open { display: flex; opacity: 1; transform: translateY(0); pointer-events: all; }
+    .mobile-menu-overlay.closing { opacity: 0; transform: translateY(-12px); pointer-events: none; }
+    .mobile-menu-list { list-style: none; display: flex; flex-direction: column; padding: 0; margin: 0; }
+    .mobile-menu-list li a {
+      display: block; font-family: 'Inter', sans-serif; font-size: 32px;
+      font-weight: 600; letter-spacing: -0.04em; color: var(--black);
+      text-decoration: none; padding: 18px 0; border-bottom: 1px solid #f0f0f0;
+    }
+    .mobile-menu-list li:last-child a { border-bottom: none; }
+
+    /* ── PAGE LAYOUT ── */
+    .page-wrap { padding-top: 140px; }
+
+    /* coluna centralizada — usada em header, body, related e footer-strip */
+    .content-col {
+      max-width: var(--content-width);
+      margin-left: auto;
+      margin-right: auto;
+      padding-left: var(--hero-pad);
+      padding-right: var(--hero-pad);
+    }
+
+    /* ── ARTICLE HEADER ── */
+    .article-header { padding-bottom: 48px; }
+    .article-title {
+      font-size: clamp(36px, 5vw, 64px); font-weight: 700;
+      font-family: 'Inter', sans-serif; letter-spacing: -0.04em;
+      line-height: 1.05; color: var(--black); margin-bottom: 20px;
+    }
+    .article-subtitle {
+      font-size: 15px; font-weight: 400; font-family: 'Inter', sans-serif;
+      color: #555; line-height: 1.6; max-width: 440px; margin-bottom: 40px;
+    }
+    .article-meta {
+      display: flex; align-items: center; flex-wrap: wrap;
+      font-size: 13px; font-family: 'Inter', sans-serif; color: var(--text-muted);
+    }
+    .article-meta-item { display: flex; align-items: center; gap: 5px; }
+    .article-meta-item strong { font-weight: 600; color: var(--black); }
+    .article-meta-sep { margin: 0 14px; color: #ddd; }
+
+    /* ── HERO IMAGE — mesma largura do texto ── */
+    .article-hero { padding-bottom: 64px; }
+    .article-hero-img {
+      width: 100%; aspect-ratio: 16/9;
+      border-radius: 16px; overflow: hidden;
+      background: #1a1a1a;
+    }
+    .article-hero-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .article-hero-placeholder {
+      width: 100%; height: 100%;
+      background: linear-gradient(160deg, #2a2a2a 0%, #1a1a1a 50%, #333 100%);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .article-hero-placeholder span {
+      font-family: 'Inter', monospace; font-size: 11px;
+      color: rgba(255,255,255,0.22); letter-spacing: 0.08em;
+    }
+
+    /* ── ARTICLE BODY ── */
+    .article-body { padding-bottom: 64px; }
+    .article-lead {
+      font-size: 20px; font-weight: 600; font-family: 'Inter', sans-serif;
+      letter-spacing: -0.025em; line-height: 1.45; color: var(--black);
+      margin-bottom: 24px;
+    }
+    .article-intro {
+      font-size: 15px; font-weight: 400; font-family: 'Inter', sans-serif;
+      color: #444; line-height: 1.8; margin-bottom: 52px;
+    }
+    .article-section { margin-bottom: 44px; }
+    .article-section-title {
+      font-size: 17px; font-weight: 700; font-family: 'Inter', sans-serif;
+      letter-spacing: -0.02em; color: var(--black); margin-bottom: 14px;
+    }
+    .article-section p {
+      font-size: 15px; font-weight: 400; font-family: 'Inter', sans-serif;
+      color: #444; line-height: 1.8; margin-bottom: 14px;
+    }
+    .article-section p:last-child { margin-bottom: 0; }
+    .article-img-block { margin: 36px 0; }
+    .article-img-block img { width: 100%; display: block; border-radius: 12px; }
+    .article-img-placeholder {
+      width: 100%; aspect-ratio: 16/9; background: var(--gray);
+      border-radius: 12px; display: flex; align-items: center; justify-content: center;
+      border: 1.5px dashed #ccc;
+    }
+    .article-img-placeholder span {
+      font-family: 'Inter', monospace; font-size: 11px;
+      color: #bbb; letter-spacing: 0.06em;
+    }
+    .article-divider { border: none; border-top: 1px solid #ebebeb; margin: 48px 0; }
+
+    /* ── RELATED CARDS — só mobile ── */
+    .related-section { padding-bottom: 80px; display: none; }
+    .related-label {
+      font-size: 12px; color: var(--text-muted); font-family: 'Inter', sans-serif;
+      letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 24px;
+    }
+    .related-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .related-card {
+      position: relative; border-radius: 16px; overflow: hidden;
+      cursor: pointer; aspect-ratio: 4/3; background: #1a1a1a;
+      text-decoration: none; display: block;
+      transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    }
+    .related-card:hover { transform: scale(1.015); }
+    .related-card-bg { position: absolute; inset: 0; }
+    .related-card-bg img { width: 100%; height: 100%; object-fit: cover; display: block; filter: brightness(0.7); }
+    .related-card-bg-ph {
+      width: 100%; height: 100%;
+      background: linear-gradient(135deg, #2a2a2a 0%, #111 100%);
+    }
+    .related-card-tag {
+      position: absolute; top: 14px; right: 14px;
+      background: rgba(255,255,255,0.95); color: var(--black);
+      font-size: 12px; font-weight: 500; font-family: 'Inter', sans-serif;
+      padding: 6px 14px; border-radius: 999px; letter-spacing: -0.01em;
+    }
+    .related-card-content {
+      position: absolute; bottom: 0; left: 0; right: 0;
+      padding: 20px 20px 22px;
+      background: linear-gradient(to top, rgba(0,0,0,0.78) 0%, rgba(0,0,0,0) 100%);
+    }
+    .related-card-date {
+      font-size: 11px; font-family: 'Inter', sans-serif;
+      color: rgba(255,255,255,0.55); margin-bottom: 7px;
+    }
+    .related-card-title {
+      font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif;
+      letter-spacing: -0.025em; color: #fff; line-height: 1.3; margin-bottom: 7px;
+    }
+    .related-card-desc {
+      font-size: 12px; font-family: 'Inter', sans-serif;
+      color: rgba(255,255,255,0.6); line-height: 1.5; font-weight: 400;
+    }
+
+    /* ── FOOTER (igual home — fixed atrás do conteúdo) ── */
+    #main-content { position: relative; z-index: 1; background: #fff; }
+    footer {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 0;
+      background: var(--gray); padding: 72px var(--hero-pad) 48px;
+      height: 420px; box-sizing: border-box;
+      display: flex; flex-direction: column; justify-content: space-between;
+    }
+    .footer-grid { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 40px; }
+    .footer-grid-socials { display: grid; grid-template-columns: 1fr 120px 1fr; gap: 40px; margin-top: -18px; }
+    .footer-socials-links { grid-column: 2 / 4; display: flex; gap: 24px; font-size: 17px; align-items: center; }
+    .footer-contact-label { font-size: 17px; color: var(--text-muted); font-family: 'Inter', sans-serif; letter-spacing: -0.02em; }
+    .footer-contact-info { display: flex; flex-direction: column; gap: 6px; }
+    .footer-contact-info a { font-size: 19px; font-weight: 400; color: var(--black); text-decoration: none; letter-spacing: -0.02em; font-family: 'Inter', sans-serif; transition: transform 0.2s ease; display: inline-block; }
+    .footer-contact-info a:hover { color: #555; transform: scale(0.98); }
+    .footer-contact-info span { font-size: 19px; font-weight: 400; font-family: 'Inter', sans-serif; }
+    .footer-socials-links a { color: var(--black); text-decoration: none; font-weight: 400; font-family: 'Inter', sans-serif; font-size: 19px; letter-spacing: -0.02em; transition: transform 0.2s ease; display: inline-block; }
+    .footer-socials-links a:hover { color: #555; transform: scale(0.98); }
+    .footer-socials-links span { color: #ccc; font-size: 19px; }
+    .footer-bottom { display: flex; justify-content: space-between; font-size: 15px; color: var(--text-muted); border-top: 1px solid #e0e0e0; padding-top: 24px; font-family: 'Inter', sans-serif; }
+
+    #footer-spacer { height: 420px; position: relative; z-index: 0; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      :root { --hero-pad: 20px; }
+      nav {
+        background: rgba(255,255,255,0.95) !important;
+        backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+        border-bottom-color: rgba(0,0,0,0.06) !important;
+        padding: 18px var(--hero-pad) !important;
+      }
+      .nav-links { display: none !important; }
+      .nav-cta { display: none !important; }
+      .nav-hamburger { display: flex !important; }
+      .page-wrap { padding-top: 80px; }
+      .article-header { padding-bottom: 28px; }
+      .article-title { font-size: clamp(28px, 8vw, 40px); margin-bottom: 14px; }
+      .article-subtitle { font-size: 14px; margin-bottom: 24px; }
+      .article-meta { flex-direction: column; align-items: flex-start; gap: 6px; }
+      .article-meta-sep { display: none; }
+      .article-hero { padding-bottom: 40px; }
+      .article-hero-img { border-radius: 12px; }
+      .article-lead { font-size: 17px; }
+      .related-section { display: block; padding: 48px 0 64px; }
+      .related-grid { grid-template-columns: 1fr; gap: 14px; }
+      .related-card { aspect-ratio: 3/2; }
+      footer { padding: 40px var(--hero-pad) 28px; height: 300px; position: fixed; }
+      #footer-spacer { height: 300px; background: #fff; position: relative; z-index: 0; }
+      .footer-grid { display: block; }
+      .footer-grid-socials { display: block; margin-top: 20px; }
+      .footer-socials-links { grid-column: auto; }
+      .footer-contact-info a { font-size: 17px; }
+      .footer-contact-info span { font-size: 17px !important; }
+      .footer-socials-links a { font-size: 17px; }
+      .footer-socials-links span { font-size: 17px; }
+      .footer-contact-label { font-size: 14px; margin-bottom: 10px; display: block; }
+      .footer-bottom { font-size: 12px; margin-top: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- MOBILE MENU OVERLAY -->
+  <div class="mobile-menu-overlay" id="mobile-menu" style="display:none;">
+    <ul class="mobile-menu-list">
+      <li><a href="Portfolio.html">Início</a></li>
+      <li><a href="Portfolio.html#selected-work">Projetos</a></li>
+      <li><a href="Portfolio.html#blog">Insights</a></li>
+      <li><a href="Portfolio.html#sobre">Sobre</a></li>
+      <li><a href="Portfolio.html#footer">Contato</a></li>
+    </ul>
+  </div>
+
+  <nav id="main-nav">
+    <a class="nav-logo" href="Portfolio.html">Pedro Barbosa</a>
+    <ul class="nav-links">
+      <li><a href="Portfolio.html" data-text="Início"><span>Início</span></a></li>
+      <li><a href="Portfolio.html#selected-work" data-text="Projetos"><span>Projetos</span></a></li>
+      <li><a href="Portfolio.html#blog" data-text="Insights"><span>Insights</span></a></li>
+      <li><a href="Portfolio.html#sobre" data-text="Sobre"><span>Sobre</span></a></li>
+    </ul>
+    <div class="nav-cta"><a href="Portfolio.html#footer">Contato</a></div>
+    <div class="nav-hamburger" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <div id="main-content">
+  <div class="page-wrap">
+
+    <!-- ARTICLE HEADER -->
+    <header class="article-header content-col">
+      <h1 class="article-title">The Power of Restraint in Design</h1>
+      <p class="article-subtitle">A look at how simplicity can sharpen communication, increase impact, and build longer-lasting brands.</p>
+      <div class="article-meta">
+        <div class="article-meta-item"><span>Data</span><strong>30 de mai. de 2025</strong></div>
+        <span class="article-meta-sep">/</span>
+        <div class="article-meta-item"><span>Categoria</span><strong>Insights</strong></div>
+        <span class="article-meta-sep">/</span>
+        <div class="article-meta-item"><span>Autor</span><strong>Pedro Barbosa</strong></div>
+      </div>
+    </header>
+
+    <!-- HERO IMAGE — mesma largura que o texto -->
+    <div class="article-hero content-col">
+      <div class="article-hero-img">
+        <div class="article-hero-placeholder">
+          <span>hero image</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- ARTICLE BODY -->
+    <article class="article-body content-col">
+      <p class="article-lead">In a world saturated with visual noise, restraint has become a radical act.</p>
+      <p class="article-intro">The most powerful brands are the ones that speak with clarity, not volume. Restraint isn't about withholding creativity — it's about applying it with intent. When everything is shouting, quiet confidence is what stands out.</p>
+
+      <div class="article-section">
+        <h2 class="article-section-title">Clarity Over Complexity</h2>
+        <p>Modern branding often falls into the trap of trying to be everything at once. The result is visual clutter, mixed messages, and diluted meaning. Restraint brings focus. It allows a brand to express one clear idea — and express it well.</p>
+        <p>This doesn't mean your brand has to be plain. It means every element — color, typography, layout, tone — is chosen with purpose. Not because it's trendy, but because it's right.</p>
+      </div>
+
+      <div class="article-img-block">
+        <div class="article-img-placeholder"><span>imagem inline</span></div>
+      </div>
+
+      <div class="article-section">
+        <h2 class="article-section-title">Designing with Intention</h2>
+        <p>Minimalist branding doesn't start with aesthetics. It starts with understanding: who you are, what you stand for, and what matters to your audience. From there, design becomes a process of refinement — removing what's unnecessary until only the essential remains.</p>
+        <p>In this way, restraint becomes a form of respect: for the message, for the audience, and for the brand's own voice.</p>
+      </div>
+
+      <hr class="article-divider" />
+
+      <div class="article-section">
+        <h2 class="article-section-title">Emotional Impact Through Simplicity</h2>
+        <p>Some of the most iconic brands — think Apple, Muji, or Aesop — aren't just recognized for their products, but for how they feel. Their restraint creates space: space for emotion, trust, and recognition. There's room to breathe. And that space becomes part of the experience.</p>
+        <p>Simplicity, when done well, doesn't feel empty. It feels calm. It feels intentional.</p>
+      </div>
+    </article>
+
+    <!-- RELATED CARDS — mesma largura que o texto -->
+    <section class="related-section content-col">
+      <div class="related-label">Leia também</div>
+      <div class="related-grid">
+        <a class="related-card" href="Content.html">
+          <div class="related-card-bg">
+            <div class="related-card-bg-ph" style="background: linear-gradient(135deg, #3a3530 0%, #1a1612 100%);"></div>
+          </div>
+          <div class="related-card-tag">Digital Design</div>
+          <div class="related-card-content">
+            <div class="related-card-date">23 de mai. de 2025</div>
+            <div class="related-card-title">Designing for Calm: UX Beyond the Screen</div>
+            <div class="related-card-desc">An exploration of how subtle interaction, whitespace, and visual pacing shape user emotion.</div>
+          </div>
+        </a>
+        <a class="related-card" href="Content.html">
+          <div class="related-card-bg">
+            <div class="related-card-bg-ph" style="background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1a 100%);"></div>
+          </div>
+          <div class="related-card-tag">Strategy</div>
+          <div class="related-card-content">
+            <div class="related-card-date">18 de mai. de 2025</div>
+            <div class="related-card-title">Building a Timeless Identity</div>
+            <div class="related-card-desc">A guide to creating brands that transcend trends, focusing on core values instead.</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+  </div><!-- /.page-wrap -->
+  </div><!-- /#main-content -->
+
+  <div id="footer-spacer"></div>
+
+  <!-- FOOTER igual home -->
+  <footer id="footer">
+    <div class="footer-grid">
+      <div></div>
+      <div class="footer-contact-label">Contato</div>
+      <div class="footer-contact-info">
+        <a href="/cdn-cgi/l/email-protection#5626333e34372434392537163e39223b373f3a7835393b"><span class="__cf_email__" data-cfemail="b4e4f1fcf6f5e6f6fbe7f5f4fcfbe0f9f5fdf89af7fbf9">[email&#160;protected]</span></a>
+        <a href="tel:+5519981746339">+55 19 9 8174 6339</a>
+        <span style="font-size:19px;font-weight:400;letter-spacing:-0.02em;">SÃO PAULO, SP – BRASIL</span>
+      </div>
+    </div>
+    <div class="footer-grid-socials">
+      <div></div>
+      <div class="footer-socials-links">
+        <a href="#">Instagram</a>
+        <span>/</span>
+        <a href="#">X (Twitter)</a>
+        <span>/</span>
+        <a href="#">LinkedIn</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>Pedro Barbosa</span>
+      <span>2026</span>
+    </div>
+  </footer>
+
+  <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+    // Nav scroll effect
+    const nav = document.getElementById('main-nav');
+    window.addEventListener('scroll', () => {
+      nav.classList.toggle('scrolled', window.scrollY > 40);
+    }, { passive: true });
+
+    // Hamburger menu
+    (function() {
+      const hamburger = document.getElementById('hamburger');
+      const overlay = document.getElementById('mobile-menu');
+      if (!hamburger || !overlay) return;
+
+      function openMenu() {
+        overlay.style.display = 'flex';
+        void overlay.offsetWidth;
+        overlay.classList.add('open');
+        overlay.classList.remove('closing');
+        hamburger.classList.add('open');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMenu() {
+        overlay.classList.add('closing');
+        overlay.classList.remove('open');
+        hamburger.classList.remove('open');
+        document.body.style.overflow = '';
+        setTimeout(() => {
+          overlay.style.display = 'none';
+          overlay.classList.remove('closing');
+        }, 400);
+      }
+      hamburger.addEventListener('click', () => {
+        if (overlay.classList.contains('open')) closeMenu();
+        else openMenu();
+      });
+      overlay.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => closeMenu());
+      });
+    })();
+  </script>
+
+</body>
+</html>
