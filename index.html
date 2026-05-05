@@ -367,13 +367,16 @@
     }
     .blog-card:hover .blog-card-date { color: #aaa; }
     .blog-title {
-      font-size: 14px;
+      font-size: 16px;
       font-weight: 600;
       font-family: 'Inter', sans-serif;
       color: #1a1a1a;
       letter-spacing: -0.02em;
       line-height: 1.4;
       transition: color 0.5s ease;
+    }
+    @media (max-width: 768px) {
+      .blog-title { font-size: 14px; }
     }
     .blog-card:hover .blog-title { color: #fff; }
     .blog-read-time {
@@ -442,9 +445,7 @@
       animation: carouselScroll 70s linear infinite;
       cursor: default;
     }
-    .carousel-track.soft-pause {
-      animation-play-state: paused;
-    }
+    /* hover pause removido */
     @keyframes carouselScroll {
       0%   { transform: translateX(0); }
       100% { transform: translateX(-50%); }
@@ -767,7 +768,6 @@
       <li><a href="#hero" class="mobile-nav-link">Início</a></li>
       <li><a href="#selected-work" class="mobile-nav-link">Projetos</a></li>
       <li><a href="#blog" class="mobile-nav-link">Insights</a></li>
-      <li><a href="#sobre" class="mobile-nav-link">Sobre</a></li>
       <li><a href="#footer" class="mobile-nav-link">Contato</a></li>
     </ul>
   </div>
@@ -778,7 +778,6 @@
       <li><a href="#hero" data-text="Início"><span>Início</span></a></li>
       <li><a href="#selected-work" data-text="Projetos"><span>Projetos</span></a></li>
       <li><a href="#blog" data-text="Insights"><span>Insights</span></a></li>
-      <li><a href="#sobre" data-text="Sobre"><span>Sobre</span></a></li>
     </ul>
     <div class="nav-cta"><a href="#footer">Contato</a></div>
     <div class="nav-hamburger" id="hamburger">
@@ -813,7 +812,7 @@
     <div class="sw-grid">
       <a class="sw-card" href="project-01.html" style="text-decoration:none;">
         <div class="sw-card-img-wrap">
-          <div class="sw-card-img ph-sw-1"></div>
+          <img class="sw-card-img" src="opwell-team.jpg" alt="Time Opwell" />
         </div>
         <div class="sw-card-footer">
           <div class="sw-card-info">
@@ -825,7 +824,7 @@
       </a>
       <a class="sw-card" href="project-02.html" style="text-decoration:none;">
         <div class="sw-card-img-wrap">
-          <div class="sw-card-img ph-sw-2"></div>
+          <img class="sw-card-img" src="mille-cuca.jpg" alt="Mille Cuca" />
         </div>
         <div class="sw-card-footer">
           <div class="sw-card-info">
@@ -923,7 +922,7 @@
         </div>
         <div class="blog-card-footer">
           <div class="blog-card-info">
-            <span class="blog-card-date">05 de mai. de 2025</span>
+            <span class="blog-card-date">05 de mai. de 2026</span>
             <span class="blog-title">Como tiro projetos de IA do papel</span>
           </div>
           <span class="blog-read-time">8 min</span>
@@ -936,7 +935,7 @@
         </div>
         <div class="blog-card-footer">
           <div class="blog-card-info">
-            <span class="blog-card-date">19 de abr. de 2025</span>
+            <span class="blog-card-date">19 de abr. de 2026</span>
             <span class="blog-title">O que um MBA na FGV me ensinou</span>
           </div>
           <span class="blog-read-time">9 min</span>
@@ -949,61 +948,17 @@
         </div>
         <div class="blog-card-footer">
           <div class="blog-card-info">
-            <span class="blog-card-date">26 de mar. de 2025</span>
+            <span class="blog-card-date">26 de mar. de 2026</span>
             <span class="blog-title">Comecei a pensar em tudo como projeto</span>
           </div>
-          <span class="blog-read-time">3 min</span>
+          <span class="blog-read-time">7 min</span>
         </div>
       </a>
 
     </div>
   </section>
 
-  <!-- SOBRE -->
-  <section id="sobre">
-    <div class="sobre-header">
-      <div>
-        <div class="sobre-label">/ Sobre mim</div>
-        <div class="sobre-title">Construindo, aprendendo e curtindo o processo!</div>
-      </div>
-      <div class="sobre-counter sobre-counter-desktop">(01)</div>
-    </div>
-    <div class="carousel-track-wrap">
-      <div class="carousel-track">
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <!-- duplicados para loop infinito -->
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-        <div class="carousel-slide"></div>
-      </div>
-    </div>
-  </section>
+  <!-- SOBRE oculto -->
 
   </div><!-- /#main-content -->
   <div id="footer-spacer"></div>
@@ -1022,11 +977,11 @@
     <div class="footer-grid-socials">
       <div></div>
       <div class="footer-socials-links">
-        <a href="#">Instagram</a>
+        <a href="https://www.instagram.com/pedrobarbosa.ig/" target="_blank">Instagram</a>
         <span>/</span>
-        <a href="#">X (Twitter)</a>
+        <a href="https://x.com/PedroBarbosa_BR" target="_blank">X (Twitter)</a>
         <span>/</span>
-        <a href="#">LinkedIn</a>
+        <a href="https://www.linkedin.com/in/pedro-barbosa-br/" target="_blank">LinkedIn</a>
       </div>
     </div>
     <div class="footer-bottom">
@@ -1189,12 +1144,7 @@
     (function() {
       const track = document.querySelector('.carousel-track');
       if (!track) return;
-      track.addEventListener('mouseenter', () => {
-        track.classList.add('soft-pause');
-      });
-      track.addEventListener('mouseleave', () => {
-        track.classList.remove('soft-pause');
-      });
+      // hover pause removido — carrossel roda contínuo
     })();
 
     // Hamburger menu mobile
